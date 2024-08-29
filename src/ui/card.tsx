@@ -1,8 +1,11 @@
 import { Card as AntCard, Divider, Flex, Modal, Typography } from "antd";
-import { CalculatedCar } from "../../interfaces";
 
 interface Props {
-  calculatedCar: CalculatedCar | null;
+  price: number;
+  customsDuty: number;
+  customsFee: number;
+  recyclingFee: number;
+  companyCommission: number;
   handleOk: () => void;
 }
 
@@ -11,8 +14,15 @@ const STYLES = {
   totalPrice: { fontWeight: "bold", fontSize: "24px", color: "green" },
 };
 
-export function Card({ calculatedCar, handleOk }: Props) {
-  if (!calculatedCar) return null;
+export function Card({
+  price,
+  companyCommission,
+  customsDuty,
+  customsFee,
+  recyclingFee,
+  handleOk,
+}: Props) {
+  const isOpen = Boolean(customsDuty || customsFee || recyclingFee);
 
   const convertToRub = (value: number) => {
     return new Intl.NumberFormat("ru-RU", {
@@ -22,10 +32,12 @@ export function Card({ calculatedCar, handleOk }: Props) {
     }).format(value);
   };
 
+  const sum = (...args: number[]) => args.reduce((a, b) => a + b, 0);
+
   return (
     <Modal
       title={<Typography.Title level={4}>Результат</Typography.Title>}
-      open={!!calculatedCar}
+      open={isOpen}
       closeIcon={null}
       onOk={handleOk}
       footer={(_, { OkBtn }) => <OkBtn />}
@@ -33,46 +45,44 @@ export function Card({ calculatedCar, handleOk }: Props) {
       <AntCard>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Цена авто: </Typography.Text>
-          <Typography.Text>
-            {convertToRub(calculatedCar.rubPrice)}
-          </Typography.Text>
+          <Typography.Text>{convertToRub(price)}</Typography.Text>
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
             Комиссия компании:
           </Typography.Text>
-          <Typography.Text>
-            {convertToRub(calculatedCar.companyCommission)}
-          </Typography.Text>
+          <Typography.Text>{convertToRub(companyCommission)}</Typography.Text>
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Пошлина: </Typography.Text>
-          <Typography.Text>
-            {convertToRub(calculatedCar.customsDuty)}
-          </Typography.Text>
+          <Typography.Text>{convertToRub(customsDuty)}</Typography.Text>
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
             Таможенный сбор:
           </Typography.Text>
-          <Typography.Text>
-            {convertToRub(calculatedCar.customsFee)}
-          </Typography.Text>
+          <Typography.Text>{convertToRub(customsFee)}</Typography.Text>
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
             Утилизационный сбор:
           </Typography.Text>
-          <Typography.Text>
-            {convertToRub(calculatedCar.recyclingFee)} ₽
-          </Typography.Text>
+          <Typography.Text>{convertToRub(recyclingFee)} ₽</Typography.Text>
         </Flex>
 
         <Divider />
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Итоговая цена:</Typography.Text>
           <Typography.Text style={STYLES.totalPrice}>
-            {convertToRub(calculatedCar.totalPrice)}
+            {convertToRub(
+              sum(
+                price,
+                companyCommission,
+                customsDuty,
+                customsFee,
+                recyclingFee
+              )
+            )}
           </Typography.Text>
         </Flex>
       </AntCard>

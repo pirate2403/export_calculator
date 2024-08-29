@@ -83,4 +83,4 @@ export const CUSTOMS_DUTY_CONFIG = {
   customsDutyUnder3Years: CUSTOMS_DUTY_UNDER_3_YEARS,
   customsDuty3To5Years: CUSTOMS_DUTY_3_5_YEARS,
   customsDutyOver5Years: CUSTOMS_DUTY_OVER_5_YEARS,
-};
+} as const;

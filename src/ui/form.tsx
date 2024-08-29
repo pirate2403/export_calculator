@@ -6,9 +6,14 @@ import {
   Radio,
   Select,
 } from "antd";
-import { Car } from "../../interfaces";
-import { CURRENCY } from "../../features/currency-rates";
-import { CAR_AGE, ENGINE_TYPE, OWNER } from "../../features/calculator";
+
+import {
+  CAR_AGE_GROUP,
+  CURRENCY_RATES,
+  ENGINE_TYPE,
+  OWNER_TYPE,
+} from "../constants";
+import { Car } from "../interfaces";
 
 interface Props {
   onSubmit: (car: Car) => void;
@@ -23,13 +28,13 @@ const STYLE = {
 } as const;
 
 const DEFAULT_VALUE = {
-  owner: OWNER.INDIVIDUAL,
-  carAge: CAR_AGE["<3"],
-  engineType: ENGINE_TYPE.GASOLINE,
-  enginePower: "",
-  engineVolume: "",
-  price: "",
-  currency: CURRENCY.RUB,
+  ownerType: OWNER_TYPE.INDIVIDUAL,
+  carAgeGroup: CAR_AGE_GROUP.BETWEEN_3_5,
+  engineType: ENGINE_TYPE.GAS,
+  enginePower: "110",
+  engineVolume: "1500",
+  price: "1300000",
+  currency: CURRENCY_RATES.JPY,
 } as const;
 
 export function Form({ onSubmit, onClear }: Props) {
@@ -48,10 +53,12 @@ export function Form({ onSubmit, onClear }: Props) {
       onFinish={onSubmit}
       style={STYLE.form}
     >
-      <AntForm.Item label="Владелец" name="owner">
+      <AntForm.Item label="Владелец" name="ownerType">
         <Radio.Group>
-          <Radio.Button value={OWNER.INDIVIDUAL}>Физическое лицо</Radio.Button>
-          <Radio.Button disabled value={OWNER.INDIVIDUAL}>
+          <Radio.Button value={OWNER_TYPE.INDIVIDUAL}>
+            Физическое лицо
+          </Radio.Button>
+          <Radio.Button disabled value={OWNER_TYPE.INDIVIDUAL}>
             Юридическое лицо
           </Radio.Button>
         </Radio.Group>
@@ -65,25 +72,36 @@ export function Form({ onSubmit, onClear }: Props) {
       </AntForm.Item>
       <AntForm.Item label="Валюта" name="currency">
         <Select style={STYLE.currency}>
-          <Select.Option value={CURRENCY.USD}>{CURRENCY.USD}</Select.Option>
-          <Select.Option value={CURRENCY.EUR}>{CURRENCY.EUR}</Select.Option>
-          <Select.Option value={CURRENCY.RUB}>{CURRENCY.RUB}</Select.Option>
-          <Select.Option value={CURRENCY.JPY}>{CURRENCY.JPY}</Select.Option>
-          <Select.Option value={CURRENCY.CNY}>{CURRENCY.CNY}</Select.Option>
-          <Select.Option value={CURRENCY.KRW}>{CURRENCY.KRW}</Select.Option>
+          <Select.Option value={CURRENCY_RATES.USD}>
+            {CURRENCY_RATES.USD}
+          </Select.Option>
+          <Select.Option value={CURRENCY_RATES.EUR}>
+            {CURRENCY_RATES.EUR}
+          </Select.Option>
+          <Select.Option value={CURRENCY_RATES.JPY}>
+            {CURRENCY_RATES.JPY}
+          </Select.Option>
+          <Select.Option value={CURRENCY_RATES.CNY}>
+            {CURRENCY_RATES.CNY}
+          </Select.Option>
+          <Select.Option value={CURRENCY_RATES.KRW}>
+            {CURRENCY_RATES.KRW}
+          </Select.Option>
         </Select>
       </AntForm.Item>
 
-      <AntForm.Item label="Возраст авто" name="carAge">
+      <AntForm.Item label="Возраст авто" name="carAgeGroup">
         <Radio.Group>
-          <Radio.Button value={CAR_AGE["<3"]}>Младше 3</Radio.Button>
-          <Radio.Button value={CAR_AGE["3-5"]}>От 3 до 5</Radio.Button>
-          <Radio.Button value={CAR_AGE[">5"]}>Старше 5</Radio.Button>
+          <Radio.Button value={CAR_AGE_GROUP.UNDER_3}>Младше 3</Radio.Button>
+          <Radio.Button value={CAR_AGE_GROUP.BETWEEN_3_5}>
+            От 3 до 5
+          </Radio.Button>
+          <Radio.Button value={CAR_AGE_GROUP.OVER_5}>Старше 5</Radio.Button>
         </Radio.Group>
       </AntForm.Item>
       <AntForm.Item label="Тип двигателя" name="engineType">
         <Radio.Group>
-          <Radio.Button value={ENGINE_TYPE.GASOLINE}>Бензин</Radio.Button>
+          <Radio.Button value={ENGINE_TYPE.GAS}>Бензин</Radio.Button>
           <Radio.Button value={ENGINE_TYPE.DIESEL}>Дизель</Radio.Button>
           <Radio.Button disabled value={ENGINE_TYPE.ELECTRIC}>
             Электро

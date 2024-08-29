@@ -1,7 +1,5 @@
-export enum CarAgeGroup {
-  UNDER_3 = "UNDER_3",
-  BETWEEN_3_5 = "BETWEEN_3_5",
-  OVER_5 = "OVER_5",
+export enum CustomsDutyMessages {
+  CALCULATED_FAILED = "Failed to calculate customs duty",
 }
 
 export interface CustomsDutyConfig {

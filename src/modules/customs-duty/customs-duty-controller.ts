@@ -1,33 +1,27 @@
 import { CustomsDutyModel } from "./customs-duty-model";
-import {
-  CarAgeGroup,
-  CustomsDutyConfig,
-  CustomsDutyRate,
-} from "./customs-duty-repos";
+import { CustomsDutyConfig, CustomsDutyRate } from "./customs-duty-repos";
 
 export class CustomsDutyController {
-  private _model: CustomsDutyModel;
-  private _calculator = {
-    [CarAgeGroup.UNDER_3]: this._calculateUnder3Years.bind(this),
-    [CarAgeGroup.BETWEEN_3_5]: this._calculate3To5YearsYears.bind(this),
-    [CarAgeGroup.OVER_5]: this._calculateOver5Years.bind(this),
-  };
+  private _model: CustomsDutyModel = new CustomsDutyModel();
+  private _calculator = [
+    this._calculateUnder3Years.bind(this),
+    this._calculate3To5YearsYears.bind(this),
+    this._calculateOver5Years.bind(this),
+  ];
 
-  constructor(private _config: CustomsDutyConfig) {
-    this._model = new CustomsDutyModel();
-  }
+  constructor(private _config: CustomsDutyConfig) {}
 
   get customsDuty(): number {
     return this._model.duty;
   }
 
-  calculateCustomsDuty(
-    carAgeGroup: CarAgeGroup,
-    engineVolume: number,
-    eurPrice: number
-  ): void {
+  calculate(carAgeGroup: number, engineVolume: number, eurPrice: number): void {
     const calculator = this._calculator[carAgeGroup];
     this._model.duty = calculator(engineVolume, eurPrice);
+  }
+
+  reset(): void {
+    this._model.duty = 0;
   }
 
   private _calculateUnder3Years(
