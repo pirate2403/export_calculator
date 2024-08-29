@@ -39,9 +39,11 @@ interface CalculateCustomsDutyProps {
   eurPrice: number;
 }
 
+const { INITIAL_RATES } = CURRENCY_RATES_CONFIG;
+
 const INITIAL_STATE: Store = {
   isLoading: false,
-  currencyRates: CURRENCY_RATES_CONFIG,
+  currencyRates: INITIAL_RATES,
   price: 0,
   customsDuty: 0,
   customsFee: 0,
@@ -51,7 +53,7 @@ const INITIAL_STATE: Store = {
 
 class RootStore {
   private _store = create<Store>(() => INITIAL_STATE);
-  private _currencyRates = new CurrencyRatesController(CURRENCY_RATES_CONFIG);
+  private _currencyRates = new CurrencyRatesController(INITIAL_RATES);
   private _customsDuty = new CustomsDutyController(CUSTOMS_DUTY_CONFIG);
   private _customsFee = new CustomsFeeController(CUSTOMS_FEE_CONFIG);
   private _recyclingFee = new RecyclingFeeController(RECYCLING_FEE_CONFIG);
