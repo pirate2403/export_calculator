@@ -31,9 +31,9 @@ const DEFAULT_VALUE = {
   ownerType: OWNER_TYPE.INDIVIDUAL,
   carAgeGroup: CAR_AGE_GROUP.BETWEEN_3_5,
   engineType: ENGINE_TYPE.GAS,
-  enginePower: "110",
-  engineVolume: "1500",
-  price: "1300000",
+  enginePower: "",
+  engineVolume: "",
+  price: "",
   currency: CURRENCY_RATES.JPY,
 } as const;
 
