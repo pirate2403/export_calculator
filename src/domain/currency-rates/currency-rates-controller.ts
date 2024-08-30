@@ -1,12 +1,16 @@
-import { CurrencyRatesValues, CurrencyRates } from "./currency-rates-repos";
+import {
+  CurrencyRatesValues,
+  CurrencyRates,
+  CurrencyRatesConfig,
+} from "./currency-rates-repos";
 import { CurrencyRateApi } from "./currency-rates-api";
 import { CurrencyRatesModel } from "./currency-rates-model";
 
 export class CurrencyRatesController {
   private _model: CurrencyRatesModel;
 
-  constructor(initialRates: CurrencyRatesValues) {
-    this._model = new CurrencyRatesModel(initialRates);
+  constructor(config: CurrencyRatesConfig) {
+    this._model = new CurrencyRatesModel(config.INITIAL_RATES);
   }
 
   get currencyRates(): CurrencyRatesValues {

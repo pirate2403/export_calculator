@@ -17,3 +17,7 @@ export interface CurrencyRatesValues {
   CNY: number;
   KRW: number;
 }
+
+export interface CurrencyRatesConfig {
+  INITIAL_RATES: CurrencyRatesValues;
+}
