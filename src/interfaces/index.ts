@@ -1,4 +1,4 @@
-import { CurrencyRates } from "../modules/currency-rates";
+import { CurrencyRates } from "../domain/currency-rates";
 
 export interface Car {
   ownerType: number;

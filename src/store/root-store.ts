@@ -12,10 +12,10 @@ import { Car } from "../interfaces";
 import {
   CurrencyRatesController,
   CurrencyRatesValues,
-} from "../modules/currency-rates";
-import { CustomsDutyController } from "../modules/customs-duty";
-import { CustomsFeeController } from "../modules/customs-fee";
-import { RecyclingFeeController } from "../modules/recycling-fee";
+} from "../domain/currency-rates";
+import { CustomsDutyController } from "../domain/customs-duty";
+import { CustomsFeeController } from "../domain/customs-fee";
+import { RecyclingFeeController } from "../domain/recycling-fee";
 
 interface Store {
   isLoading: boolean;
