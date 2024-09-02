@@ -35,7 +35,7 @@ export function Card() {
       title={<Typography.Title level={4}>Результат</Typography.Title>}
       open={isOpen}
       closeIcon={null}
-      onOk={rootStore.reset}
+      onOk={() => rootStore.reset()}
       footer={(_, { OkBtn }) => <OkBtn />}
     >
       <AntCard>
