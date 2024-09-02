@@ -81,7 +81,7 @@ export function Card() {
           <Typography.Text style={STYLES.title}>
             Услуги брокера:
           </Typography.Text>
-          <Typography.Text>{convertToRub(brokerExpenses)} ₽</Typography.Text>
+          <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Экспертизы:</Typography.Text>
