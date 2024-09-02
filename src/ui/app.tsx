@@ -1,26 +1,26 @@
-import { Spin } from "antd";
-import { useRootStore } from "../store/root-store";
 import { Card } from "./card";
+import { Currency } from "./currency";
 import { Form } from "./form";
 import { AppLayout } from "./layout";
+import { Spinner } from "./spinner";
+import { Error } from "./error";
 
 const STYLES = {
   container: { maxWidth: "400px", width: "100%" },
 };
 
 function App() {
-  const rootStore = useRootStore();
-
   return (
-    <AppLayout>
-      <div style={STYLES.container}>
-        <Spin spinning={rootStore.state.isLoading} size="large">
-          <Form onSubmit={rootStore.calculate} onClear={rootStore.reset} />
-          <Card handleOk={rootStore.reset} {...rootStore.state} />
-        </Spin>
-        {rootStore.modal}
-      </div>
-    </AppLayout>
+    <Spinner>
+      <AppLayout>
+        <div style={STYLES.container}>
+          <Form />
+          <Currency />
+          <Card />
+          <Error />
+        </div>
+      </AppLayout>
+    </Spinner>
   );
 }
 

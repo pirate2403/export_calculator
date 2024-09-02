@@ -1,14 +1,12 @@
-import { Modal, ModalFuncProps } from "antd";
-import { ModalFunc } from "antd/es/modal/confirm";
-import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { COMPANY_CONFIG } from "../config/company-config";
 import { CURRENCY_RATES_CONFIG } from "../config/currency-rates-config";
+import { CUSTOMS_CLARENCE_CONFIG } from "../config/customs-clearance-config";
 import { CUSTOMS_DUTY_CONFIG } from "../config/customs-duty-config";
 import { CUSTOMS_FEE_CONFIG } from "../config/customs-fee-config";
+import { JAPAN_EXPENSES_CONFIG } from "../config/japan-expanses-config";
 import { RECYCLING_FEE_CONFIG } from "../config/recycling-fee-config";
 import { ERROR } from "../constants";
-import { Car } from "../interfaces";
 import {
   CurrencyRatesController,
   CurrencyRatesValues,
@@ -16,11 +14,11 @@ import {
 import { CustomsDutyController } from "../domain/customs-duty";
 import { CustomsFeeController } from "../domain/customs-fee";
 import { RecyclingFeeController } from "../domain/recycling-fee";
-import { CUSTOMS_CLARENCE_CONFIG } from "../config/customs-clearance-config";
-import { JAPAN_EXPENSES_CONFIG } from "../config/japan-expanses-config";
+import { Car } from "../interfaces";
 
 interface Store {
   isLoading: boolean;
+  errorMessage: null | string;
   currencyRates: CurrencyRatesValues;
   price: number;
   customsDuty: number;
@@ -48,6 +46,7 @@ interface CalculateCustomsDutyProps {
 
 const INITIAL_STATE = {
   isLoading: false,
+  errorMessage: null,
   currencyRates: CURRENCY_RATES_CONFIG.INITIAL_RATES,
   price: 0,
   customsDuty: 0,
@@ -68,16 +67,13 @@ class RootStore {
   private _customsFee = new CustomsFeeController(CUSTOMS_FEE_CONFIG);
   private _recyclingFee = new RecyclingFeeController(RECYCLING_FEE_CONFIG);
 
-  constructor(
-    private _showModal: (props: ModalFuncProps) => ReturnType<ModalFunc>
-  ) {}
-
   get state() {
     return this._store();
   }
 
   calculate(car: Car) {
     try {
+      throw new Error("Not implemented");
       const { currency, price } = car;
       const rubPrice = this._currencyRates.convertToRub(price, currency);
       const eurPrice = this._currencyRates.convertRubToEur(rubPrice);
@@ -95,7 +91,7 @@ class RootStore {
         ),
       });
     } catch {
-      this._handleError(ERROR.calc);
+      this._store.setState({ errorMessage: ERROR.calc });
     }
   }
 
@@ -106,8 +102,7 @@ class RootStore {
       const currencyRates = this._currencyRates.currencyRates;
       this._store.setState({ currencyRates, isLoading: false });
     } catch {
-      this._handleError(ERROR.fetch);
-      this._store.setState({ isLoading: false });
+      this._store.setState({ isLoading: false, errorMessage: ERROR.fetch });
     }
   }
 
@@ -117,14 +112,6 @@ class RootStore {
     this._customsFee.reset();
     this._recyclingFee.reset();
     this._store.setState({ ...INITIAL_STATE, currencyRates });
-  }
-
-  private _handleError(message: string) {
-    this._showModal({
-      title: ERROR.title,
-      content: message,
-      onOk: this.reset.bind(this),
-    });
   }
 
   private _calculateRecyclingFee(props: CalculateRecyclingFeeProps) {
@@ -145,19 +132,4 @@ class RootStore {
   }
 }
 
-export const useRootStore = () => {
-  const [modal, modalContextHolder] = Modal.useModal();
-  const [store] = useState(() => new RootStore(modal.error));
-
-  useEffect(() => {
-    store.fetchCurrencyRates();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return {
-    state: store.state,
-    calculate: store.calculate.bind(store),
-    reset: store.reset.bind(store),
-    modal: modalContextHolder,
-  };
-};
+export const rootStore = new RootStore();

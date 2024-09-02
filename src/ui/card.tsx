@@ -1,37 +1,23 @@
 import { Card as AntCard, Divider, Flex, Modal, Typography } from "antd";
-
-interface Props {
-  price: number;
-  customsDuty: number;
-  customsFee: number;
-  recyclingFee: number;
-  companyCommission: number;
-  brokerExpenses: number;
-  expertise: number;
-  testing: number;
-  portDelivery: number;
-  freight: number;
-  handleOk: () => void;
-}
+import { rootStore } from "../store/root-store";
 
 const STYLES = {
   title: { fontWeight: "bold" },
   totalPrice: { fontWeight: "bold", fontSize: "24px", color: "green" },
 };
 
-export function Card({
-  price,
-  companyCommission,
-  customsDuty,
-  customsFee,
-  recyclingFee,
-  brokerExpenses,
-  expertise,
-  testing,
-  portDelivery,
-  freight,
-  handleOk,
-}: Props) {
+export function Card() {
+  const customsDuty = rootStore.state.customsDuty;
+  const customsFee = rootStore.state.customsFee;
+  const recyclingFee = rootStore.state.recyclingFee;
+  const price = rootStore.state.price;
+  const companyCommission = rootStore.state.companyCommission;
+  const portDelivery = rootStore.state.portDelivery;
+  const freight = rootStore.state.freight;
+  const brokerExpenses = rootStore.state.brokerExpenses;
+  const expertise = rootStore.state.expertise;
+  const testing = rootStore.state.testing;
+
   const isOpen = Boolean(customsDuty || customsFee || recyclingFee);
 
   const convertToRub = (value: number) => {
@@ -49,7 +35,7 @@ export function Card({
       title={<Typography.Title level={4}>Результат</Typography.Title>}
       open={isOpen}
       closeIcon={null}
-      onOk={handleOk}
+      onOk={rootStore.reset}
       footer={(_, { OkBtn }) => <OkBtn />}
     >
       <AntCard>

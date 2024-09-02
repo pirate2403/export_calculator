@@ -14,13 +14,9 @@ import {
   OWNER_TYPE,
 } from "../constants";
 import { Car } from "../interfaces";
+import { rootStore } from "../store/root-store";
 
-interface Props {
-  onSubmit: (car: Car) => void;
-  onClear?: () => void;
-}
-
-const STYLE = {
+const STYLES = {
   form: { marginBottom: "20px" },
   buttons: { marginTop: "20px" },
   fillWidth: { width: "100%" },
@@ -37,12 +33,12 @@ const DEFAULT_VALUE = {
   currency: CURRENCY_RATES.JPY,
 } as const;
 
-export function Form({ onSubmit, onClear }: Props) {
+export function Form() {
   const [form] = AntForm.useForm<Car>();
 
   const handleClear = () => {
     form.resetFields();
-    onClear?.();
+    rootStore.reset();
   };
 
   return (
@@ -50,8 +46,8 @@ export function Form({ onSubmit, onClear }: Props) {
       layout="vertical"
       form={form}
       initialValues={DEFAULT_VALUE}
-      onFinish={onSubmit}
-      style={STYLE.form}
+      onFinish={(values) => rootStore.calculate(values)}
+      style={STYLES.form}
     >
       <AntForm.Item label="Владелец" name="ownerType">
         <Radio.Group>
@@ -68,10 +64,10 @@ export function Form({ onSubmit, onClear }: Props) {
         name="price"
         rules={[{ required: true, message: "Введите цену авто" }]}
       >
-        <InputNumber style={STYLE.fillWidth} />
+        <InputNumber style={STYLES.fillWidth} />
       </AntForm.Item>
       <AntForm.Item label="Валюта" name="currency">
-        <Select style={STYLE.currency}>
+        <Select style={STYLES.currency}>
           <Select.Option value={CURRENCY_RATES.USD}>
             {CURRENCY_RATES.USD}
           </Select.Option>
@@ -116,17 +112,17 @@ export function Form({ onSubmit, onClear }: Props) {
         name="engineVolume"
         rules={[{ required: true, message: "Введите объем двигателя" }]}
       >
-        <InputNumber style={STYLE.fillWidth} />
+        <InputNumber style={STYLES.fillWidth} />
       </AntForm.Item>
       <AntForm.Item
         label="Мощность двигателя (л.с.)"
         name="enginePower"
         rules={[{ required: true, message: "Введите мощность двигателя" }]}
       >
-        <InputNumber style={STYLE.fillWidth} />
+        <InputNumber style={STYLES.fillWidth} />
       </AntForm.Item>
       <AntForm.Item>
-        <Flex gap={20} style={STYLE.buttons}>
+        <Flex gap={20} style={STYLES.buttons}>
           <Button type="primary" htmlType="submit" block>
             Рассчитать
           </Button>
