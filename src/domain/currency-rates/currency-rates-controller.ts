@@ -30,6 +30,10 @@ export class CurrencyRatesController {
     return this._toFixed(price / this.currencyRates.EUR);
   }
 
+  convertJpyToRub(price: number): number {
+    return this._toFixed(price / this.currencyRates.JPY);
+  }
+
   convertRubToEur(rub: number): number {
     return this._toFixed(rub * this.currencyRates.EUR);
   }

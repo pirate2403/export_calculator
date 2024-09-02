@@ -6,6 +6,11 @@ interface Props {
   customsFee: number;
   recyclingFee: number;
   companyCommission: number;
+  brokerExpenses: number;
+  expertise: number;
+  testing: number;
+  portDelivery: number;
+  freight: number;
   handleOk: () => void;
 }
 
@@ -20,6 +25,11 @@ export function Card({
   customsDuty,
   customsFee,
   recyclingFee,
+  brokerExpenses,
+  expertise,
+  testing,
+  portDelivery,
+  freight,
   handleOk,
 }: Props) {
   const isOpen = Boolean(customsDuty || customsFee || recyclingFee);
@@ -69,6 +79,34 @@ export function Card({
           </Typography.Text>
           <Typography.Text>{convertToRub(recyclingFee)} ₽</Typography.Text>
         </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Доставка до порта отгрузки:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(portDelivery)} ₽</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Фрахт до Владивостока:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(freight)} ₽</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Услуги брокера:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(brokerExpenses)} ₽</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>Экспертизы:</Typography.Text>
+          <Typography.Text>{convertToRub(expertise)} ₽</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Испытательная лаборатория :
+          </Typography.Text>
+          <Typography.Text>{convertToRub(testing)} ₽</Typography.Text>
+        </Flex>
 
         <Divider />
         <Flex gap={10} align="center" justify="space-between">
@@ -80,7 +118,12 @@ export function Card({
                 companyCommission,
                 customsDuty,
                 customsFee,
-                recyclingFee
+                recyclingFee,
+                brokerExpenses,
+                expertise,
+                testing,
+                portDelivery,
+                freight
               )
             )}
           </Typography.Text>

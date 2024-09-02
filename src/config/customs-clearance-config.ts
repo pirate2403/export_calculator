@@ -1,0 +1,5 @@
+export const CUSTOMS_CLARENCE_CONFIG = {
+  BROKER_EXPANSES: 65_000,
+  EXPERTISE: 5_000,
+  TESTING: 8_000,
+} as const;

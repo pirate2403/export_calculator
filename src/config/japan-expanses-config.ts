@@ -1,0 +1,4 @@
+export const JAPAN_EXPENSES_CONFIG = {
+  PORT_DELIVERY: 90000,
+  FREIGHT: 80000,
+} as const;

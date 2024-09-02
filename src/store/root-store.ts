@@ -16,6 +16,8 @@ import {
 import { CustomsDutyController } from "../domain/customs-duty";
 import { CustomsFeeController } from "../domain/customs-fee";
 import { RecyclingFeeController } from "../domain/recycling-fee";
+import { CUSTOMS_CLARENCE_CONFIG } from "../config/customs-clearance-config";
+import { JAPAN_EXPENSES_CONFIG } from "../config/japan-expanses-config";
 
 interface Store {
   isLoading: boolean;
@@ -25,6 +27,11 @@ interface Store {
   customsFee: number;
   recyclingFee: number;
   companyCommission: number;
+  brokerExpenses: number;
+  expertise: number;
+  testing: number;
+  portDelivery: number;
+  freight: number;
 }
 
 interface CalculateRecyclingFeeProps {
@@ -47,6 +54,11 @@ const INITIAL_STATE = {
   customsFee: 0,
   recyclingFee: 0,
   companyCommission: COMPANY_CONFIG.COMMISSION,
+  brokerExpenses: CUSTOMS_CLARENCE_CONFIG.BROKER_EXPANSES,
+  expertise: CUSTOMS_CLARENCE_CONFIG.EXPERTISE,
+  testing: CUSTOMS_CLARENCE_CONFIG.TESTING,
+  portDelivery: 0,
+  freight: 0,
 } satisfies Store;
 
 class RootStore {
@@ -75,6 +87,12 @@ class RootStore {
         customsFee: this._calculateCustomsFee(rubPrice),
         recyclingFee: this._calculateRecyclingFee({ ...car }),
         customsDuty: this._currencyRates.convertEurToRub(eurCustomsDuty),
+        portDelivery: this._currencyRates.convertJpyToRub(
+          JAPAN_EXPENSES_CONFIG.PORT_DELIVERY
+        ),
+        freight: this._currencyRates.convertJpyToRub(
+          JAPAN_EXPENSES_CONFIG.FREIGHT
+        ),
       });
     } catch {
       this._handleError(ERROR.calc);
