@@ -89,7 +89,7 @@ export function Card() {
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
-            Испытательная лаборатория :
+            Испытательная лаборатория:
           </Typography.Text>
           <Typography.Text>{convertToRub(testing)}</Typography.Text>
         </Flex>
