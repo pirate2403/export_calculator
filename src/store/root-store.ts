@@ -73,7 +73,6 @@ class RootStore {
 
   calculate(car: Car) {
     try {
-      throw new Error("Not implemented");
       const { currency, price } = car;
       const rubPrice = this._currencyRates.convertToRub(price, currency);
       const eurPrice = this._currencyRates.convertRubToEur(rubPrice);
