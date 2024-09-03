@@ -4,6 +4,7 @@ import { Form } from "./form";
 import { AppLayout } from "./layout";
 import { Spinner } from "./spinner";
 import { Error } from "./error";
+import { Divider } from "antd";
 
 const STYLES = {
   container: { maxWidth: "400px", width: "100%" },
@@ -14,8 +15,9 @@ function App() {
     <Spinner>
       <AppLayout>
         <div style={STYLES.container}>
-          <Form />
           <Currency />
+          <Divider />
+          <Form />
           <Card />
           <Error />
         </div>
