@@ -85,7 +85,6 @@ export function Form() {
           </Select.Option>
         </Select>
       </AntForm.Item>
-
       <AntForm.Item label="Возраст авто" name="carAgeGroup">
         <Radio.Group>
           <Radio.Button value={CAR_AGE_GROUP.UNDER_3}>Младше 3</Radio.Button>
