@@ -13,6 +13,10 @@ import {
   ENGINE_TYPE,
   OWNER_TYPE,
 } from "../constants";
+import {
+  engineTypeValidator,
+  engineVolumeValidator,
+} from "../helpers/validators";
 import { Car } from "../interfaces";
 import { rootStore } from "../store/root-store";
 
@@ -64,7 +68,7 @@ export function Form() {
         name="price"
         rules={[{ required: true, message: "Введите цену авто" }]}
       >
-        <InputNumber style={STYLES.fillWidth} />
+        <InputNumber style={STYLES.fillWidth} min={0} />
       </AntForm.Item>
       <AntForm.Item label="Валюта" name="currency">
         <Select style={STYLES.currency}>
@@ -94,7 +98,11 @@ export function Form() {
           <Radio.Button value={CAR_AGE_GROUP.OVER_5}>Старше 5</Radio.Button>
         </Radio.Group>
       </AntForm.Item>
-      <AntForm.Item label="Тип двигателя" name="engineType">
+      <AntForm.Item
+        label="Тип двигателя"
+        name="engineType"
+        rules={[{ warningOnly: true, validator: engineTypeValidator }]}
+      >
         <Radio.Group>
           <Radio.Button value={ENGINE_TYPE.GAS}>Бензин</Radio.Button>
           <Radio.Button value={ENGINE_TYPE.DIESEL}>Дизель</Radio.Button>
@@ -109,16 +117,19 @@ export function Form() {
       <AntForm.Item
         label="Объем двигателя (см3)"
         name="engineVolume"
-        rules={[{ required: true, message: "Введите объем двигателя" }]}
+        rules={[
+          { required: true, message: "Введите объем двигателя" },
+          { warningOnly: true, validator: engineVolumeValidator },
+        ]}
       >
-        <InputNumber style={STYLES.fillWidth} />
+        <InputNumber style={STYLES.fillWidth} min={0} />
       </AntForm.Item>
       <AntForm.Item
         label="Мощность двигателя (л.с.)"
         name="enginePower"
         rules={[{ required: true, message: "Введите мощность двигателя" }]}
       >
-        <InputNumber style={STYLES.fillWidth} />
+        <InputNumber style={STYLES.fillWidth} min={0} />
       </AntForm.Item>
       <AntForm.Item>
         <Flex gap={20} style={STYLES.buttons}>
