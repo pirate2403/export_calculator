@@ -32,7 +32,7 @@ export function Card() {
 
   return (
     <Modal
-      title={<Typography.Title level={4}>Результат</Typography.Title>}
+      centered
       open={isOpen}
       closeIcon={null}
       onOk={() => rootStore.reset()}
@@ -45,10 +45,17 @@ export function Card() {
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
-            Комиссия компании:
+            Доставка до порта отгрузки:
           </Typography.Text>
-          <Typography.Text>{convertToRub(companyCommission)}</Typography.Text>
+          <Typography.Text>{convertToRub(portDelivery)}</Typography.Text>
         </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Фрахт до Владивостока:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(freight)}</Typography.Text>
+        </Flex>
+        <Divider />
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Пошлина: </Typography.Text>
           <Typography.Text>{convertToRub(customsDuty)}</Typography.Text>
@@ -65,6 +72,13 @@ export function Card() {
           </Typography.Text>
           <Typography.Text>{convertToRub(recyclingFee)}</Typography.Text>
         </Flex>
+        <Divider />
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Услуги брокера:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
+        </Flex>
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Экспертизы:</Typography.Text>
           <Typography.Text>{convertToRub(expertise)}</Typography.Text>
@@ -75,23 +89,12 @@ export function Card() {
           </Typography.Text>
           <Typography.Text>{convertToRub(testing)}</Typography.Text>
         </Flex>
+        <Divider />
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
-            Услуги брокера:
+            Комиссия компании:
           </Typography.Text>
-          <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
-        </Flex>
-        <Flex gap={10} align="center" justify="space-between">
-          <Typography.Text style={STYLES.title}>
-            Доставка до порта отгрузки:
-          </Typography.Text>
-          <Typography.Text>{convertToRub(portDelivery)}</Typography.Text>
-        </Flex>
-        <Flex gap={10} align="center" justify="space-between">
-          <Typography.Text style={STYLES.title}>
-            Фрахт до Владивостока:
-          </Typography.Text>
-          <Typography.Text>{convertToRub(freight)}</Typography.Text>
+          <Typography.Text>{convertToRub(companyCommission)}</Typography.Text>
         </Flex>
         <Divider />
         <Flex gap={10} align="center" justify="space-between">

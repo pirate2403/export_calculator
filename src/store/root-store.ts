@@ -1,10 +1,10 @@
 import { create } from "zustand";
+import { JAPAN_EXPENSES_CONFIG } from "./../config/japan-expanses-config";
 import { COMPANY_CONFIG } from "../config/company-config";
 import { CURRENCY_RATES_CONFIG } from "../config/currency-rates-config";
 import { CUSTOMS_CLARENCE_CONFIG } from "../config/customs-clearance-config";
 import { CUSTOMS_DUTY_CONFIG } from "../config/customs-duty-config";
 import { CUSTOMS_FEE_CONFIG } from "../config/customs-fee-config";
-import { JAPAN_EXPENSES_CONFIG } from "../config/japan-expanses-config";
 import { RECYCLING_FEE_CONFIG } from "../config/recycling-fee-config";
 import { ERROR } from "../constants";
 import {
@@ -15,6 +15,7 @@ import { CustomsDutyController } from "../domain/customs-duty";
 import { CustomsFeeController } from "../domain/customs-fee";
 import { RecyclingFeeController } from "../domain/recycling-fee";
 import { Car } from "../interfaces";
+import { JapanExpansesController } from "../domain/japan-expanses";
 
 interface Store {
   isLoading: boolean;
@@ -66,6 +67,7 @@ class RootStore {
   private _customsDuty = new CustomsDutyController(CUSTOMS_DUTY_CONFIG);
   private _customsFee = new CustomsFeeController(CUSTOMS_FEE_CONFIG);
   private _recyclingFee = new RecyclingFeeController(RECYCLING_FEE_CONFIG);
+  private _japanExpanses = new JapanExpansesController(JAPAN_EXPENSES_CONFIG);
 
   get state() {
     return this._store();
@@ -97,21 +99,18 @@ class RootStore {
 
   private _calculateTotalPrice(car: Car) {
     try {
-      const { currency, price } = car;
+      const { currency, price, engineVolume } = car;
       const rubPrice = this._currencyRates.convertToRub(price, currency);
       const eurPrice = this._currencyRates.convertRubToEur(rubPrice);
       const eurCustomsDuty = this._calculateCustomsDuty({ ...car, eurPrice });
+      const { delivery, freight } = this._calculateJapanExpanses(engineVolume);
       this._store.setState({
         price: rubPrice,
         customsFee: this._calculateCustomsFee(rubPrice),
         recyclingFee: this._calculateRecyclingFee({ ...car }),
         customsDuty: this._currencyRates.convertEurToRub(eurCustomsDuty),
-        portDelivery: this._currencyRates.convertJpyToRub(
-          JAPAN_EXPENSES_CONFIG.PORT_DELIVERY
-        ),
-        freight: this._currencyRates.convertJpyToRub(
-          JAPAN_EXPENSES_CONFIG.FREIGHT
-        ),
+        portDelivery: this._currencyRates.convertJpyToRub(delivery),
+        freight: this._currencyRates.convertJpyToRub(freight),
       });
     } catch {
       this._store.setState({ errorMessage: ERROR.calc });
@@ -133,6 +132,11 @@ class RootStore {
     const { carAgeGroup, engineVolume, eurPrice } = props;
     this._customsDuty.calculate(carAgeGroup, engineVolume, eurPrice);
     return this._customsDuty.customsDuty;
+  }
+
+  private _calculateJapanExpanses(engineVolume: number) {
+    this._japanExpanses.calculate(engineVolume);
+    return this._japanExpanses.japanExpanses;
   }
 }
 
