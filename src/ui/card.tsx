@@ -3,7 +3,7 @@ import { rootStore } from "../store/root-store";
 
 const STYLES = {
   title: { fontWeight: "bold" },
-  totalPrice: { fontWeight: "bold", fontSize: "24px", color: "green" },
+  totalPrice: { fontWeight: "bold", fontSize: "18px", color: "green" },
 };
 
 export function Card() {
@@ -66,6 +66,22 @@ export function Card() {
           <Typography.Text>{convertToRub(recyclingFee)}</Typography.Text>
         </Flex>
         <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>Экспертизы:</Typography.Text>
+          <Typography.Text>{convertToRub(expertise)}</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Испытательная лаборатория:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(testing)}</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
+          <Typography.Text style={STYLES.title}>
+            Услуги брокера:
+          </Typography.Text>
+          <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
+        </Flex>
+        <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>
             Доставка до порта отгрузки:
           </Typography.Text>
@@ -77,23 +93,6 @@ export function Card() {
           </Typography.Text>
           <Typography.Text>{convertToRub(freight)}</Typography.Text>
         </Flex>
-        <Flex gap={10} align="center" justify="space-between">
-          <Typography.Text style={STYLES.title}>
-            Услуги брокера:
-          </Typography.Text>
-          <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
-        </Flex>
-        <Flex gap={10} align="center" justify="space-between">
-          <Typography.Text style={STYLES.title}>Экспертизы:</Typography.Text>
-          <Typography.Text>{convertToRub(expertise)}</Typography.Text>
-        </Flex>
-        <Flex gap={10} align="center" justify="space-between">
-          <Typography.Text style={STYLES.title}>
-            Испытательная лаборатория:
-          </Typography.Text>
-          <Typography.Text>{convertToRub(testing)}</Typography.Text>
-        </Flex>
-
         <Divider />
         <Flex gap={10} align="center" justify="space-between">
           <Typography.Text style={STYLES.title}>Итоговая цена:</Typography.Text>

@@ -71,7 +71,31 @@ class RootStore {
     return this._store();
   }
 
-  calculate(car: Car) {
+  async calculate(car: Car) {
+    await this.fetchCurrencyRates();
+    this._calculateTotalPrice(car);
+  }
+
+  async fetchCurrencyRates() {
+    try {
+      this._store.setState({ isLoading: true });
+      await this._currencyRates.updateRates();
+      const currencyRates = this._currencyRates.currencyRates;
+      this._store.setState({ currencyRates, isLoading: false });
+    } catch {
+      this._store.setState({ isLoading: false, errorMessage: ERROR.fetch });
+    }
+  }
+
+  reset() {
+    const currencyRates = this._currencyRates.currencyRates;
+    this._customsDuty.reset();
+    this._customsFee.reset();
+    this._recyclingFee.reset();
+    this._store.setState({ ...INITIAL_STATE, currencyRates });
+  }
+
+  private _calculateTotalPrice(car: Car) {
     try {
       const { currency, price } = car;
       const rubPrice = this._currencyRates.convertToRub(price, currency);
@@ -92,25 +116,6 @@ class RootStore {
     } catch {
       this._store.setState({ errorMessage: ERROR.calc });
     }
-  }
-
-  async fetchCurrencyRates() {
-    try {
-      this._store.setState({ isLoading: true });
-      await this._currencyRates.updateRates();
-      const currencyRates = this._currencyRates.currencyRates;
-      this._store.setState({ currencyRates, isLoading: false });
-    } catch {
-      this._store.setState({ isLoading: false, errorMessage: ERROR.fetch });
-    }
-  }
-
-  reset() {
-    const currencyRates = this._currencyRates.currencyRates;
-    this._customsDuty.reset();
-    this._customsFee.reset();
-    this._recyclingFee.reset();
-    this._store.setState({ ...INITIAL_STATE, currencyRates });
   }
 
   private _calculateRecyclingFee(props: CalculateRecyclingFeeProps) {

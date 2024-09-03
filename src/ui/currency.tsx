@@ -20,25 +20,25 @@ export function Currency() {
   };
 
   return (
-    <Flex gap={4} style={{ color: "white" }}>
+    <Flex gap={4} wrap style={{ color: "white" }}>
       <Flex gap={4} align="center">
         <Typography.Text style={STYLES.title}>EUR: </Typography.Text>
-        <Typography.Text>{convert(1 / currencyRates.EUR)}</Typography.Text>
+        <Typography.Text>{convert(1 / currencyRates.EUR)};</Typography.Text>
       </Flex>
 
       <Flex gap={4} align="center">
         <Typography.Text style={STYLES.title}>USD: </Typography.Text>
-        <Typography.Text>{convert(1 / currencyRates.USD)}</Typography.Text>
+        <Typography.Text>{convert(1 / currencyRates.USD)};</Typography.Text>
       </Flex>
 
       <Flex gap={4} align="center">
         <Typography.Text style={STYLES.title}>JPY: </Typography.Text>
-        <Typography.Text>{convert(1 / currencyRates.JPY)}</Typography.Text>
+        <Typography.Text>{convert(1 / currencyRates.JPY)};</Typography.Text>
       </Flex>
 
       <Flex gap={4} align="center">
         <Typography.Text style={STYLES.title}>KRW: </Typography.Text>
-        <Typography.Text>{convert(1 / currencyRates.KRW)}</Typography.Text>
+        <Typography.Text>{convert(1 / currencyRates.KRW)};</Typography.Text>
       </Flex>
     </Flex>
   );
