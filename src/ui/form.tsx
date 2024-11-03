@@ -1,7 +1,5 @@
-import {Button, Flex, Form as AntForm, InputNumber, Radio, Select,} from "antd";
-
+import {Form as AntForm, InputNumber, Radio, Select,} from "antd";
 import {CAR_AGE_GROUP, CURRENCY_RATES, ENGINE_TYPE, OWNER_TYPE,} from "../constants";
-import {engineTypeValidator, engineVolumeValidator,} from "../helpers/validators";
 import {Car} from "../interfaces";
 import {rootStore} from "../store/root-store";
 
@@ -22,20 +20,32 @@ const DEFAULT_VALUE = {
     currency: CURRENCY_RATES.JPY,
 } as const;
 
+function isElectric(engineType: number) {
+    return engineType === ENGINE_TYPE.ELECTRIC;
+}
+
 export function Form() {
     const [form] = AntForm.useForm<Car>();
 
-    const handleClear = () => {
-        form.resetFields();
-        rootStore.reset();
-    };
+    const changeEngineType = () => {
+        form.resetFields(['enginePower', 'engineVolume']);
+    }
+
+    const handleFormChange = async () => {
+        try {
+            const values = await form.validateFields();
+            await rootStore.calculate(values)
+        } catch {
+            rootStore.reset();
+        }
+    }
 
     return (
         <AntForm
             layout="vertical"
             form={form}
             initialValues={DEFAULT_VALUE}
-            onFinish={(values) => rootStore.calculate(values)}
+            onChange={handleFormChange}
             style={STYLES.form}
         >
             <AntForm.Item label="Владелец" name="ownerType">
@@ -51,7 +61,7 @@ export function Form() {
             <AntForm.Item
                 label="Цена авто"
                 name="price"
-                rules={[{required: true, message: "Введите цену авто"}]}
+                rules={[{required: true, message: ""}]}
             >
                 <InputNumber style={STYLES.fillWidth} min={0}/>
             </AntForm.Item>
@@ -86,46 +96,45 @@ export function Form() {
             <AntForm.Item
                 label="Тип двигателя"
                 name="engineType"
-                rules={[{warningOnly: true, validator: engineTypeValidator}]}
             >
-                <Radio.Group>
+                <Radio.Group onChange={changeEngineType}>
                     <Radio.Button value={ENGINE_TYPE.GAS}>Бензин</Radio.Button>
                     <Radio.Button value={ENGINE_TYPE.DIESEL}>Дизель</Radio.Button>
-                    <Radio.Button disabled value={ENGINE_TYPE.ELECTRIC}>
-                        Электро
-                    </Radio.Button>
-                    <Radio.Button disabled value={ENGINE_TYPE.HYBRID}>
+                    <Radio.Button value={ENGINE_TYPE.HYBRID}>
                         Гибрид
+                    </Radio.Button>
+                    <Radio.Button value={ENGINE_TYPE.ELECTRIC}>
+                        Электро
                     </Radio.Button>
                 </Radio.Group>
             </AntForm.Item>
-            <AntForm.Item
-                label="Объем двигателя (см3)"
-                name="engineVolume"
-                rules={[
-                    {required: true, message: "Введите объем двигателя"},
-                    {warningOnly: true, validator: engineVolumeValidator},
-                ]}
-            >
-                <InputNumber style={STYLES.fillWidth} min={0}/>
-            </AntForm.Item>
-            <AntForm.Item
-                label="Мощность двигателя (л.с.)"
-                name="enginePower"
-                rules={[{required: true, message: "Введите мощность двигателя"}]}
-            >
-                <InputNumber style={STYLES.fillWidth} min={0}/>
-            </AntForm.Item>
-            <AntForm.Item>
-                <Flex gap={20} style={STYLES.buttons}>
-                    <Button type="primary" htmlType="submit" block>
-                        Рассчитать
-                    </Button>
-                    <Button type="default" htmlType="button" onClick={handleClear}>
-                        Очистить
-                    </Button>
-                </Flex>
+            <AntForm.Item shouldUpdate>
+                {
+                    ({getFieldValue}) => (
+                        <>
+                            <AntForm.Item
+                                label="Мощность двигателя (л.с.)"
+                                name="enginePower"
+                                shouldUpdate
+                                rules={[{required: isElectric(getFieldValue("engineType")), message: ""}]}
+                                hidden={!isElectric(getFieldValue("engineType"))}
+                            >
+                                <InputNumber style={STYLES.fillWidth} min={0} placeholder='100'/>
+                            </AntForm.Item>
+                            <AntForm.Item
+                                label="Объем двигателя (см3)"
+                                name="engineVolume"
+                                shouldUpdate
+                                rules={[{required: !isElectric(getFieldValue("engineType")), message: ""}]}
+                                hidden={isElectric(getFieldValue("engineType"))}
+                            >
+                                <InputNumber style={STYLES.fillWidth} min={0} placeholder='1500'/>
+                            </AntForm.Item>
+                        </>
+                    )
+                }
             </AntForm.Item>
         </AntForm>
-    );
+    )
+        ;
 }
