@@ -63,7 +63,7 @@ export function Form() {
                 name="price"
                 rules={[{required: true, message: ""}]}
             >
-                <InputNumber style={STYLES.fillWidth} min={0}/>
+                <InputNumber style={STYLES.fillWidth} min={0} placeholder='1000000' />
             </AntForm.Item>
             <AntForm.Item label="Валюта" name="currency">
                 <Select style={STYLES.currency}>
