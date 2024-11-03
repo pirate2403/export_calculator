@@ -27,8 +27,6 @@ interface Store {
   recyclingFee: number;
   companyCommission: number;
   brokerExpenses: number;
-  expertise: number;
-  testing: number;
   portDelivery: number;
   freight: number;
 }
@@ -55,8 +53,6 @@ const INITIAL_STATE = {
   recyclingFee: 0,
   companyCommission: COMPANY_CONFIG.COMMISSION,
   brokerExpenses: CUSTOMS_CLARENCE_CONFIG.BROKER_EXPANSES,
-  expertise: CUSTOMS_CLARENCE_CONFIG.EXPERTISE,
-  testing: CUSTOMS_CLARENCE_CONFIG.TESTING,
   portDelivery: 0,
   freight: 0,
 } satisfies Store;
