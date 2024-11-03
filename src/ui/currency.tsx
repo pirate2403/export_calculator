@@ -20,10 +20,6 @@ export function Currency() {
         }).format(value);
     };
 
-    const resetPage = () => {
-        window.location.reload();
-    }
-
     return (
         <Flex gap={8} align='center' justify='space-between'>
             <Flex gap={4} wrap style={{color: "white"}}>
@@ -48,7 +44,7 @@ export function Currency() {
                 </Flex>
 
             </Flex>
-            <Button type="primary" icon={<ReloadOutlined/>} onClick={resetPage}/>
+            <Button type="primary" icon={<ReloadOutlined/>} onClick={() => rootStore.fetchCurrencyRates()}/>
         </Flex>
     );
 }

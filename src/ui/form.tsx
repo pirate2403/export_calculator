@@ -1,11 +1,11 @@
-import {Form as AntForm, InputNumber, Radio, Select,} from "antd";
+import {Button, Flex, Form as AntForm, InputNumber, Radio, Select,} from "antd";
 import {CAR_AGE_GROUP, CURRENCY_RATES, ENGINE_TYPE, OWNER_TYPE,} from "../constants";
 import {Car} from "../interfaces";
 import {rootStore} from "../store/root-store";
 
 const STYLES = {
-    form: {marginBottom: "20px"},
-    buttons: {marginTop: "20px"},
+    form: {marginBottom: "0"},
+    buttons: {marginTop: "0"},
     fillWidth: {width: "100%"},
     currency: {minWidth: "120px", width: "30%"},
 } as const;
@@ -31,21 +31,17 @@ export function Form() {
         form.resetFields(['enginePower', 'engineVolume']);
     }
 
-    const handleFormChange = async () => {
-        try {
-            const values = await form.validateFields();
-            await rootStore.calculate(values)
-        } catch {
-            rootStore.reset();
-        }
-    }
+    const handleClear = () => {
+        form.resetFields();
+        rootStore.reset();
+    };
 
     return (
         <AntForm
             layout="vertical"
             form={form}
             initialValues={DEFAULT_VALUE}
-            onChange={handleFormChange}
+            onFinish={(values) => rootStore.calculate(values)}
             style={STYLES.form}
         >
             <AntForm.Item label="Владелец" name="ownerType">
@@ -133,6 +129,16 @@ export function Form() {
                         </>
                     )
                 }
+            </AntForm.Item>
+            <AntForm.Item>
+                <Flex gap={20} style={STYLES.buttons}>
+                    <Button type="primary" htmlType="submit" block>
+                        Рассчитать
+                    </Button>
+                    <Button type="default" htmlType="button" onClick={handleClear}>
+                        Очистить
+                    </Button>
+                </Flex>
             </AntForm.Item>
         </AntForm>
     )
