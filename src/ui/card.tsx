@@ -21,7 +21,6 @@ export function Card() {
         return new Intl.NumberFormat("ru-RU", {
             style: "currency",
             currency: "RUB",
-            minimumFractionDigits: 2,
         }).format(value);
     };
 
@@ -37,19 +36,17 @@ export function Card() {
                         <Flex gap={10} align="center" justify="space-between">
                             <Typography.Text style={STYLES.title}>Итоговая цена:</Typography.Text>
                             <Typography.Text style={STYLES.totalPrice}>
-                                {convertToRub(
-                                    sum(
-                                        price,
-                                        companyCommission,
-                                        customsDuty,
-                                        customsFee,
-                                        recyclingFee,
-                                        brokerExpenses,
-                                        japanExpanses,
-                                        exciseDuty,
-                                        vat,
-                                    )
-                                )}
+                                {convertToRub(sum(
+                                    price,
+                                    companyCommission,
+                                    customsDuty,
+                                    customsFee,
+                                    recyclingFee,
+                                    brokerExpenses,
+                                    japanExpanses,
+                                    exciseDuty,
+                                    vat,
+                                ))}
                             </Typography.Text>
                         </Flex>
                     ),

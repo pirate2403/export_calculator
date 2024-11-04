@@ -36,50 +36,46 @@ export function Form() {
         rootStore.reset();
     };
 
+    const handleFinish = (values: Car) => {
+        void rootStore.calculate(values);
+    }
+
     return (
         <AntForm
             layout="vertical"
             form={form}
             initialValues={DEFAULT_VALUE}
-            onFinish={(values) => rootStore.calculate(values)}
+            onFinish={handleFinish}
             style={STYLES.form}
         >
-            <AntForm.Item label="Владелец" name="ownerType">
-                <Radio.Group>
-                    <Radio.Button value={OWNER_TYPE.INDIVIDUAL}>
-                        Физическое лицо
-                    </Radio.Button>
-                    <Radio.Button disabled value={OWNER_TYPE.INDIVIDUAL}>
-                        Юридическое лицо
-                    </Radio.Button>
-                </Radio.Group>
-            </AntForm.Item>
-            <AntForm.Item
-                label="Цена авто"
-                name="price"
-                rules={[{required: true, message: ""}]}
-            >
-                <InputNumber style={STYLES.fillWidth} min={0} placeholder='1000000'/>
-            </AntForm.Item>
-            <AntForm.Item label="Валюта" name="currency">
-                <Select style={STYLES.currency}>
-                    <Select.Option value={CURRENCY_RATES.USD}>
-                        {CURRENCY_RATES.USD}
-                    </Select.Option>
-                    <Select.Option value={CURRENCY_RATES.EUR}>
-                        {CURRENCY_RATES.EUR}
-                    </Select.Option>
-                    <Select.Option value={CURRENCY_RATES.JPY}>
-                        {CURRENCY_RATES.JPY}
-                    </Select.Option>
-                    <Select.Option value={CURRENCY_RATES.CNY}>
-                        {CURRENCY_RATES.CNY}
-                    </Select.Option>
-                    <Select.Option value={CURRENCY_RATES.KRW}>
-                        {CURRENCY_RATES.KRW}
-                    </Select.Option>
-                </Select>
-            </AntForm.Item>
+            <Flex gap={4} align='flex-end'>
+                <AntForm.Item label="Владелец" name="ownerType" hidden>
+                    <Radio.Group>
+                        <Radio.Button value={OWNER_TYPE.INDIVIDUAL}>
+                            Физическое лицо
+                        </Radio.Button>
+                        <Radio.Button disabled value={OWNER_TYPE.INDIVIDUAL}>
+                            Юридическое лицо
+                        </Radio.Button>
+                    </Radio.Group>
+                </AntForm.Item>
+                <AntForm.Item
+                    style={STYLES.fillWidth}
+                    label="Цена авто"
+                    name="price"
+                    rules={[{required: true, message: ""}]}
+                >
+                    <InputNumber style={STYLES.fillWidth} min={0} placeholder='1000000'/>
+                </AntForm.Item>
+                <AntForm.Item name="currency">
+                    <Select>
+                        <Select.Option value={CURRENCY_RATES.USD}>$</Select.Option>
+                        <Select.Option value={CURRENCY_RATES.EUR}>€</Select.Option>
+                        <Select.Option value={CURRENCY_RATES.JPY}>¥</Select.Option>
+                        <Select.Option value={CURRENCY_RATES.KRW}>₩</Select.Option>
+                    </Select>
+                </AntForm.Item>
+            </Flex>
             <AntForm.Item label="Возраст авто" name="carAgeGroup">
                 <Radio.Group>
                     <Radio.Button value={CAR_AGE_GROUP.UNDER_3}>Младше 3</Radio.Button>

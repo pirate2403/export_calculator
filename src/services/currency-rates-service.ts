@@ -14,11 +14,11 @@ export class CurrencyRatesService {
     }
 
     convertToRub(price: number, rate: number): number {
-        return this._toFixed(price / rate);
+        return this._toFixed(price * rate);
     }
 
     convertFromRub(rub: number, rate: number): number {
-        return this._toFixed(rub * rate);
+        return this._toFixed(rub / rate);
     }
 
     private _toFixed(value: number): number {

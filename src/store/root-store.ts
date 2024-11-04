@@ -16,6 +16,7 @@ import {JapanExpansesService} from "../services/japan-expanses-service.ts";
 import {ExciseDutyService} from "../services/excise-duty-service.ts";
 import {EXCISE_DUTY_CONFIG} from "../config/excise-duty-config.ts";
 import {VatService} from "../services/vat-service.ts";
+import {convert} from "../helpers/convert.ts";
 
 interface Store {
     isLoading: boolean;
@@ -68,7 +69,14 @@ class RootStore {
     async fetchCurrencyRates() {
         try {
             this._store.setState({isLoading: true});
-            const currencyRates = await this._currencyRates.updateRates();
+            const response = await this._currencyRates.updateRates();
+            const currencyRates: CurrencyRatesValues = {
+                EUR: convert(1 / response.EUR),
+                USD: convert(1 / response.USD),
+                JPY: convert(1 / response.JPY),
+                CNY: convert(1 / response.CNY),
+                KRW: convert(1 / response.KRW),
+            };
             this._store.setState({currencyRates, isLoading: false});
         } catch {
             this._store.setState({isLoading: false, errorMessage: ERROR.fetch});
@@ -78,6 +86,10 @@ class RootStore {
     reset() {
         const currencyRates = this._store.getState().currencyRates;
         this._store.setState({...INITIAL_STATE, currencyRates});
+    }
+
+    setCurrencyRates(currencyRates: CurrencyRatesValues) {
+        this._store.setState({currencyRates});
     }
 
     private _calculateTotalPrice(car: Car) {
