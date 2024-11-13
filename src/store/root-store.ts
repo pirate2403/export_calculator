@@ -1,5 +1,4 @@
 import {create} from "zustand";
-import {Api} from "../api";
 import {getValueByClass} from "../helpers/getValueByClass.ts";
 import {convert} from "../helpers/convert.ts";
 import {CONFIG} from "../config/config.ts";
@@ -67,12 +66,12 @@ class RootStore {
         this._store.setState({isLoading: false, isCalculatorInit: true})
     }
 
-    async initRates(): Promise<void> {
-        const rates = await Api.getRates()
+    private async initRates(): Promise<void> {
+        const rates = await this.getRates()
         this._store.setState({currencyRates: rates})
     }
 
-    async initCalcus(): Promise<void> {
+    private async initCalcus(): Promise<void> {
         return new Promise((resolve) => {
             setTimeout(() => {
                 window.CalcusWidget.show('Customs')
@@ -81,7 +80,7 @@ class RootStore {
         })
     }
 
-    initContainerObserver() {
+    private initContainerObserver() {
         const container = document.querySelector('#calcus-container');
         if (!container) return;
         const observer = new MutationObserver((mutations) => {
@@ -95,7 +94,7 @@ class RootStore {
         observer.observe(container, {childList: true, subtree: true});
     }
 
-    initLoaderObserver() {
+    private initLoaderObserver() {
         const targetElement = document.querySelector('.loading-row');
         if (!targetElement) return;
         const observer = new MutationObserver((mutations) => {
@@ -113,7 +112,7 @@ class RootStore {
         observer.observe(targetElement, {attributes: true, attributeFilter: ['style']});
     }
 
-    initResultObserver() {
+    private initResultObserver() {
         const targetElement = document.querySelector('.result-placeholder-total2');
         if (!targetElement) return;
         const observer = new MutationObserver((mutations) => {
@@ -144,6 +143,12 @@ class RootStore {
             });
         });
         observer.observe(targetElement, {childList: true, subtree: true});
+    }
+
+    private async getRates(): Promise<CurrencyRates> {
+        const res = await fetch(`https://www.cbr-xml-daily.ru/latest.js`);
+        const {rates} = await res.json();
+        return rates;
     }
 }
 
