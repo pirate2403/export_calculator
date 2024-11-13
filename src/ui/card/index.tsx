@@ -97,7 +97,7 @@ export function Card() {
                                 <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
                             </Flex>
                             <Flex gap={10} align="center" justify="space-between">
-                                <Typography.Text style={STYLES.title}>Цена авто + растаможка: </Typography.Text>
+                                <Typography.Text style={STYLES.title}>Цена авто: </Typography.Text>
                                 <Typography.Text>{convertToRub(price)}</Typography.Text>
                             </Flex>
                             <Flex gap={10} align="center" justify="space-between">

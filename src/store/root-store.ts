@@ -125,19 +125,20 @@ class RootStore {
                 const excise = getValueByClass('result-placeholder-excise');
                 const vat = getValueByClass('result-placeholder-nds');
                 const utilizationFee = getValueByClass('result-placeholder-util');
+                const total = getValueByClass('result-placeholder-total');
                 const totalWithCarPrice = getValueByClass('result-placeholder-total2');
                 const japanExpanses = convert(CONFIG.JAPAN_EXPENSES, store.currencyRates.JPY);
 
 
                 this._store.setState({
-                    customsFee: customsFee || 0,
-                    customsDuty: customsDuty || 0,
-                    exciseDuty: excise || 0,
+                    customsFee: customsFee,
+                    customsDuty: customsDuty,
+                    exciseDuty: excise,
                     vat: vat || 0,
-                    recyclingFee: utilizationFee || 0,
+                    recyclingFee: utilizationFee,
                     japanExpanses,
                     companyCommission: CONFIG.COMPANY_COMMISSION,
-                    price: totalWithCarPrice || 0,
+                    price: totalWithCarPrice - total,
                     brokerExpenses: CONFIG.BROKER_COMMISSION
                 })
             });
