@@ -1,7 +1,7 @@
 import {Flex, Layout as AntLayout} from "antd";
 import {PropsWithChildren} from "react";
-import logo from '../assets/logo.png';
-import logoText from '../assets/logo_text.png';
+import logo from '../../assets/logo.png';
+import logoText from '../../assets/logo_text.png';
 
 const {Header, Content} = AntLayout;
 

@@ -1,0 +1,9 @@
+.calc-label {
+    pointer-events: none;
+}
+
+.loading-row, .offers-frow, .result-row {
+    position: absolute;
+    top: 100%;
+    opacity: 0;
+}

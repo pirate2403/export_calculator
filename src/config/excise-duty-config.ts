@@ -1,9 +1,0 @@
-export const EXCISE_DUTY_CONFIG = {
-    UNDER_90_HP: 0,
-    UNDER_150_HP: 58,
-    UNDER_200_HP: 557,
-    UNDER_300_HP: 912,
-    UNDER_400_HP: 1555,
-    UNDER_500_HP: 1609,
-    OVER_500_HP: 1662,
-} as const;

@@ -1,6 +1,7 @@
-export const convert = (value: number) => {
-    const result = new Intl.NumberFormat("ru-RU", {
-        minimumFractionDigits: 1,
-    }).format(value);
-    return parseFloat(result.replace(/,/, '.'));
+export const convert = (price: number, rate: number) => {
+    return toFixed(price / rate);
 };
+
+function toFixed(value: number): number {
+    return parseFloat(value.toFixed(2));
+}

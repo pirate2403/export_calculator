@@ -1,27 +1,22 @@
 import {create} from "zustand";
-import {JAPAN_EXPENSES_CONFIG} from "./../config/japan-expanses-config";
-import {COMPANY_CONFIG} from "../config/company-config";
-import {CURRENCY_RATES_CONFIG} from "../config/currency-rates-config";
-import {CUSTOMS_CLARENCE_CONFIG} from "../config/customs-clearance-config";
-import {CUSTOMS_DUTY_CONFIG} from "../config/customs-duty-config";
-import {CUSTOMS_FEE_CONFIG} from "../config/customs-fee-config";
-import {RECYCLING_FEE_CONFIG} from "../config/recycling-fee-config";
-import {ERROR} from "../constants";
-import {Car} from "../interfaces";
-import {CurrencyRatesService, CurrencyRatesValues} from "../services/currency-rates-service.ts";
-import {CustomsDutyService} from "../services/customs-duty.service.ts";
-import {CustomsFeeService} from "../services/customs-fee-service.ts";
-import {RecyclingFeeService} from "../services/recycling-fee-service.ts";
-import {JapanExpansesService} from "../services/japan-expanses-service.ts";
-import {ExciseDutyService} from "../services/excise-duty-service.ts";
-import {EXCISE_DUTY_CONFIG} from "../config/excise-duty-config.ts";
-import {VatService} from "../services/vat-service.ts";
+import {Api} from "../api";
+import {getValueByClass} from "../helpers/getValueByClass.ts";
 import {convert} from "../helpers/convert.ts";
+import {CONFIG} from "../config/config.ts";
+
+interface CurrencyRates {
+    USD: number;
+    EUR: number;
+    JPY: number;
+    CNY: number;
+    KRW: number;
+}
 
 interface Store {
     isLoading: boolean;
+    isCalculatorInit: boolean;
     errorMessage: null | string;
-    currencyRates: CurrencyRatesValues;
+    currencyRates: CurrencyRates;
     price: number;
     customsDuty: number;
     customsFee: number;
@@ -33,10 +28,19 @@ interface Store {
     vat: number;
 }
 
+const INITIAL_RATES = {
+    USD: 1,
+    EUR: 1,
+    JPY: 1,
+    CNY: 1,
+    KRW: 1,
+} satisfies CurrencyRates
+
 const INITIAL_STATE = {
     isLoading: false,
+    isCalculatorInit: false,
     errorMessage: null,
-    currencyRates: CURRENCY_RATES_CONFIG.INITIAL_RATES,
+    currencyRates: INITIAL_RATES,
     price: 0,
     customsDuty: 0,
     customsFee: 0,
@@ -50,74 +54,96 @@ const INITIAL_STATE = {
 
 class RootStore {
     private _store = create<Store>(() => INITIAL_STATE);
-    private _currencyRates = new CurrencyRatesService();
-    private _customsDuty = new CustomsDutyService(CUSTOMS_DUTY_CONFIG);
-    private _customsFee = new CustomsFeeService(CUSTOMS_FEE_CONFIG);
-    private _recyclingFee = new RecyclingFeeService(RECYCLING_FEE_CONFIG);
-    private _japanExpanses = new JapanExpansesService(JAPAN_EXPENSES_CONFIG);
-    private _exciseDuty = new ExciseDutyService(EXCISE_DUTY_CONFIG);
-    private _vat = new VatService();
 
     get state() {
         return this._store();
     }
 
-    async calculate(car: Car) {
-        this._calculateTotalPrice(car);
+    async initApp() {
+        this._store.setState({isLoading: true})
+        await this.initRates()
+        await this.initCalcus()
+        this.initContainerObserver()
+        this._store.setState({isLoading: false, isCalculatorInit: true})
     }
 
-    async fetchCurrencyRates() {
-        try {
-            this._store.setState({isLoading: true});
-            const response = await this._currencyRates.updateRates();
-            const currencyRates: CurrencyRatesValues = {
-                EUR: convert(1 / response.EUR),
-                USD: convert(1 / response.USD),
-                JPY: convert(1 / response.JPY),
-                CNY: convert(1 / response.CNY),
-                KRW: convert(1 / response.KRW),
-            };
-            this._store.setState({currencyRates, isLoading: false});
-        } catch {
-            this._store.setState({isLoading: false, errorMessage: ERROR.fetch});
-        }
+    async initRates(): Promise<void> {
+        const rates = await Api.getRates()
+        this._store.setState({currencyRates: rates})
     }
 
-    reset() {
-        const currencyRates = this._store.getState().currencyRates;
-        this._store.setState({...INITIAL_STATE, currencyRates});
+    async initCalcus(): Promise<void> {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                window.CalcusWidget.show('Customs')
+                resolve()
+            }, 2000)
+        })
     }
 
-    setCurrencyRates(currencyRates: CurrencyRatesValues) {
-        this._store.setState({currencyRates});
-    }
-
-    private _calculateTotalPrice(car: Car) {
-        try {
-            const currencyRates = this._store.getState().currencyRates;
-            const rubPrice = this._currencyRates.convertToRub(car.price, currencyRates[car.currency]);
-            const eurPrice = this._currencyRates.convertFromRub(rubPrice, currencyRates.EUR);
-            const customsDuty = this._currencyRates.convertToRub(this._customsDuty.calculate(car, eurPrice), currencyRates.EUR);
-            const customsFee = this._customsFee.calculate(rubPrice);
-            const recyclingFee = this._recyclingFee.calculate(car);
-            const japanExpanses = this._currencyRates.convertToRub(this._japanExpanses.calculate(car), currencyRates[car.currency]);
-            const exciseDuty = this._exciseDuty.calculate(car);
-            const vat = this._vat.calculate(car, rubPrice, customsDuty, exciseDuty);
-
-            this._store.setState({
-                customsDuty,
-                customsFee,
-                recyclingFee,
-                price: rubPrice,
-                japanExpanses,
-                exciseDuty,
-                vat,
-                companyCommission: COMPANY_CONFIG.COMMISSION,
-                brokerExpenses: CUSTOMS_CLARENCE_CONFIG.BROKER_EXPANSES,
+    initContainerObserver() {
+        const container = document.querySelector('#calcus-container');
+        if (!container) return;
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    this.initLoaderObserver();
+                    this.initResultObserver();
+                }
             });
-        } catch {
-            this._store.setState({errorMessage: ERROR.calc});
-        }
+        });
+        observer.observe(container, {childList: true, subtree: true});
+    }
+
+    initLoaderObserver() {
+        const targetElement = document.querySelector('.loading-row');
+        if (!targetElement) return;
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    const display = window.getComputedStyle(targetElement).display;
+                    if (display === 'none') {
+                        this._store.setState({isLoading: false})
+                    } else {
+                        this._store.setState({isLoading: true})
+                    }
+                }
+            });
+        });
+        observer.observe(targetElement, {attributes: true, attributeFilter: ['style']});
+    }
+
+    initResultObserver() {
+        const targetElement = document.querySelector('.result-placeholder-total2');
+        if (!targetElement) return;
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type !== 'childList') return
+                const store = this._store.getState()
+
+                const customsFee = getValueByClass('result-placeholder-sbor');
+                const customsDuty = getValueByClass('result-placeholder-tax');
+                const excise = getValueByClass('result-placeholder-excise');
+                const vat = getValueByClass('result-placeholder-nds');
+                const utilizationFee = getValueByClass('result-placeholder-util');
+                const totalWithCarPrice = getValueByClass('result-placeholder-total2');
+                const japanExpanses = convert(CONFIG.JAPAN_EXPENSES, store.currencyRates.JPY);
+
+
+                this._store.setState({
+                    customsFee: customsFee || 0,
+                    customsDuty: customsDuty || 0,
+                    exciseDuty: excise || 0,
+                    vat: vat || 0,
+                    recyclingFee: utilizationFee || 0,
+                    japanExpanses,
+                    companyCommission: CONFIG.COMPANY_COMMISSION,
+                    price: totalWithCarPrice || 0,
+                    brokerExpenses: CONFIG.BROKER_COMMISSION
+                })
+            });
+        });
+        observer.observe(targetElement, {childList: true, subtree: true});
     }
 }
 

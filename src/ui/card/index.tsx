@@ -1,5 +1,5 @@
-import {Collapse, Divider, Flex, Typography} from "antd";
-import {rootStore} from "../store/root-store";
+import {Collapse, Flex, Typography} from "antd";
+import {rootStore} from "../../store/root-store";
 
 const STYLES = {
     title: {fontWeight: "bold"},
@@ -16,6 +16,7 @@ export function Card() {
     const brokerExpenses = rootStore.state.brokerExpenses;
     const vat = rootStore.state.vat;
     const exciseDuty = rootStore.state.exciseDuty;
+    const isCalculatorInit = rootStore.state.isCalculatorInit;
 
     const convertToRub = (value: number) => {
         return new Intl.NumberFormat("ru-RU", {
@@ -24,7 +25,10 @@ export function Card() {
         }).format(value);
     };
 
+
     const sum = (...args: number[]) => args.reduce((a, b) => a + b, 0);
+
+    if (!isCalculatorInit) return null;
 
     return (
         <Collapse
@@ -53,16 +57,11 @@ export function Card() {
                     children: (
                         <>
                             <Flex gap={10} align="center" justify="space-between">
-                                <Typography.Text style={STYLES.title}>Цена авто: </Typography.Text>
-                                <Typography.Text>{convertToRub(price)}</Typography.Text>
-                            </Flex>
-                            <Flex gap={10} align="center" justify="space-between">
                                 <Typography.Text style={STYLES.title}>
                                     Расходы по Японии:
                                 </Typography.Text>
                                 <Typography.Text>{convertToRub(japanExpanses)}</Typography.Text>
                             </Flex>
-                            <Divider/>
                             <Flex gap={10} align="center" justify="space-between">
                                 <Typography.Text style={STYLES.title}>Пошлина: </Typography.Text>
                                 <Typography.Text>{convertToRub(customsDuty)}</Typography.Text>
@@ -97,7 +96,10 @@ export function Card() {
                                 </Typography.Text>
                                 <Typography.Text>{convertToRub(brokerExpenses)}</Typography.Text>
                             </Flex>
-                            <Divider/>
+                            <Flex gap={10} align="center" justify="space-between">
+                                <Typography.Text style={STYLES.title}>Цена авто + растаможка: </Typography.Text>
+                                <Typography.Text>{convertToRub(price)}</Typography.Text>
+                            </Flex>
                             <Flex gap={10} align="center" justify="space-between">
                                 <Typography.Text style={STYLES.title}>
                                     Комиссия компании:

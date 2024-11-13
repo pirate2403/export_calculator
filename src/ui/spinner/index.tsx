@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { rootStore } from "../store/root-store";
+import { rootStore } from "../../store/root-store.ts";
 import { Spin } from "antd";
 
 export function Spinner({ children }: PropsWithChildren) {
